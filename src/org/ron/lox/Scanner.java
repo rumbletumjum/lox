@@ -71,9 +71,57 @@ class Scanner {
       case '>':
         addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
         break;
+      case '/':
+        if (match('/')) {
+          while (peek() != '\n' && !isAtEnd()) {
+            advance();
+          }
+        } else {
+          addToken(TokenType.SLASH);
+        }
+        break;
+      case ' ':
+      case '\r':
+      case '\t':
+        break;
+      case '\n':
+        line++;
+        break;
+      case '"':
+        string();
+        break;
       default:
-        Lox.error(line, "Unexpected character");
+        if (isDigit(c)) {
+          number();
+        } else {
+          Lox.error(line, "Unexpected character");
+        }
     }
+  }
+
+  private void string() {
+    while (peek() != '"' && !isAtEnd()) {
+      if (peek() == '\n') {
+        line++;
+      }
+      advance();
+    }
+
+    if (isAtEnd()) {
+      Lox.error(line, "Unterminated string");
+      return;
+    }
+
+    // consume closing '"'
+    advance();
+
+    // subtring to remove surrounding quotes
+    String value = source.substring(start + 1, current - 1);
+    addToken(TokenType.STRING, value);
+  }
+
+  private void number() {
+
   }
 
   private char advance() {
@@ -93,8 +141,19 @@ class Scanner {
     return true;
   }
 
+  private char peek() {
+    if (isAtEnd()) {
+      return '\0';
+    }
+    return source.charAt(current);
+  }
+
   private boolean isAtEnd() {
     return current >= source.length();
+  }
+
+  private boolean isDigit(char c) {
+    return c >= '0' && c <= '9';
   }
 
   private void addToken(TokenType type) {
