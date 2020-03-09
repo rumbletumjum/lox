@@ -1,4 +1,4 @@
-package org.ron.lox;
+package lox;
 
 import java.util.Objects;
 
