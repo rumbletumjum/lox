@@ -1,7 +1,5 @@
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/usage.statistics.xml
-.idea/**/dictionaries
-.idea/**/shelf
+# Ignore Gradle project-specific cache directory
+.gradle
 
-out/
+# Ignore Gradle build output directory
+build
